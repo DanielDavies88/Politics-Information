@@ -157,6 +157,7 @@ length.c. length.d. length.e.
 
 
 The above code shows that in January there were 783 mentions of President Tsai, this number now includes references using other ways to address the president "蔡英文" and "空心蔡". 
+
 -------------------------------------------
 
 substr:
