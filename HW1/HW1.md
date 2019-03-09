@@ -11,9 +11,11 @@ This function delivers the character length of content.
 n = nchar(data$Message):
 Once applied to the mayoral candidate data base it tells us the amount of characters of each individual Facebook post.
 
+========
+
 ke <- subset(data, select = c("Page_Name", "Message"), subset = (Page_Name == "柯文哲"))
       
-ken = nchar(ko$Message)             
+ken = nchar(ke$Message)             
 
 kenmean <- mean(ken , na.rm = TRUE)
 
