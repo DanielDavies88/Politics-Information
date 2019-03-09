@@ -176,5 +176,7 @@ questions <- grep("\\?",X201801_data$Message)
 QPosts <- X201801_data$Message[c(questions)]
 QandA <- strsplit(QPosts,"(?<=[?.!|])", perl=TRUE)
 QandA
+
 ................
+
 The above codes splits messages where there is a question mark. Ideally, this could separate questions and answers given by the candidate themselves. By separating the questions it could be possible to utilise the questions to ask a sample group, seeing how many people would give the same answer, without being directly told by the candidate.
