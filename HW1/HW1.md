@@ -12,19 +12,18 @@ n = nchar(data$Message):
 Once applied to the mayoral candidate data base it tells us the amount of characters of each individual Facebook post.
 
 ke <- subset(data, select = c("Page_Name", "Message"), subset = (Page_Name == "柯文哲"))
-ke             
+      
 ken = nchar(ko$Message)             
-ken
-mean(ken)
-mean(ken , na.rm = TRUE)
+
+kenmean <- mean(ken , na.rm = TRUE)
 
 han <- subset(data, select = c("Page_Name", "Message"), subset = (Page_Name == "韓國瑜"))
-han             
+           
 hann = nchar(han$Message)             
-hann
 
-mean(hann , na.rm = TRUE)
-data.frame(konmean, hanmean) 
+hanmean <- mean(hann , na.rm = TRUE)
+
+data.frame(kenmean, hanmean) 
 
 kenmean hanmean
      298    58.5
@@ -60,8 +59,9 @@ This can help us to refine the data into logical patterns,by candidate names, wh
 
 
 m = grepl("國民黨", X201801_data$Message)
-m
+
 as.integer(m)
+
 mean(m)
 0.075
 
@@ -80,18 +80,22 @@ The above code will find whether candaidates Messages contain the keyword Taiwan
 
 data <- X201801_data
 han <- subset(data, select = c("Page_Name", "Message"), subset = (Page_Name == ("韓國瑜")) | (Page_Name =="韓國瑜粉絲團"))
-han  
+
 n = regexpr("台灣",han$Message)
+
 hantai <- n[c(n>0)] 
-hantai
+
 hantaimean <- mean(hantai, na.rm = TRUE)
+
 ke <- subset(data, select = c("Page_Name", "Message"), subset = (Page_Name == ("柯文哲")) | (Page_Name =="北美柯文哲粉絲團"))
-ke  
+
 o = regexpr("台灣",ke$Message)
 ketai <- o[c(o>0)] 
-ketai
+
 ketaimean <- mean(ketai, na.rm = TRUE)
+
 data.frame(hantaimean,ketaimean)
+
 hantaimean ketaimean
  109.5     102.25
 
@@ -112,17 +116,24 @@ The above code replaces the name "北美柯文哲粉絲團" with "柯文哲", th
 
 
 data <- X201801_data
+
 page <- data$Page_Name
+
 summary(page)
    Length     Class      Mode 
     12648 character character 
+
 kepage <- sub(pattern = "北美柯文哲粉絲團", replacement = "柯文哲", x = page)
+
 kepage1 <- sub(pattern = "柯文哲市長的543", replacement = "柯文哲", x = kepage)
+
 keown <- sum(page == "柯文哲")/sum(kepage1 == "柯文哲")
+
 keown
 [1] 0.5333333
 
 hanpage <- sub(pattern = "韓國瑜粉絲團", replacement = "韓國瑜", x = page)
+
 hanpage1 <- sub(pattern = "韓國瑜新聞網", replacement = "韓國瑜", x = hanpage)
 
 hanown <- sum(page == "韓國瑜")/sum(hanpage1 == "韓國瑜")
@@ -148,16 +159,20 @@ The above code will replace all instances of "台灣" with "中華民國", this 
 
 
 post <- X201801_data$Message
+
 a <- gsub(pattern = "蔡英文" , replacement = "蔡總統", x = post)
+
 b <- gsub(pattern = "空心蔡" , replacement = "蔡總統", x = a)
 
 c <- grep("蔡總統", post)
+
 d <- grep("蔡總統", a)
+
 e <- grep("蔡總統", b)
 
 data.frame(length(c),length(d),length(e))
 length.c. length.d. length.e.
-1       142       767       783
+      142       767       783
 
 
 The above code shows that in January there were 783 mentions of President Tsai, this number now includes references using other ways to address the president "蔡英文" and "空心蔡". 
@@ -192,8 +207,11 @@ strsplit:
 This function splits a string, at the defined character, into multiple strings.
 
 questions <- grep("\\?",X201801_data$Message)
+
 QPosts <- X201801_data$Message[c(questions)]
+
 QandA <- strsplit(QPosts,"(?<=[?.!|])", perl=TRUE)
+
 QandA
 
 
