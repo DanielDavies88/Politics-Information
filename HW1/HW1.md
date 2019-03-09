@@ -1,6 +1,9 @@
 ﻿Daniel:
 
+-------------------------------------------
+
 ~~~~03/07/108~~~~
+-------------------------------------------
 
  char:
 This function delivers the character length of content.
@@ -98,6 +101,7 @@ The above code shows us that if the term Taiwan appears in posts on 柯文哲 af
 
 ----------------------------------
 ~~~~03/08/108~~~~
+-------------------------------------------
 
 sub:
 
@@ -172,6 +176,7 @@ The above code will show only the first 70 characters of the (first 30) messages
 -------------------------------------------
 
 ~~~~03/09/108~~~~
+-------------------------------------------
  paste:
 
 This function pastes a specified pattern to a designated location within a vector.
