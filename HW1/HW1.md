@@ -27,6 +27,8 @@ kenmean hanmean
      298    58.5
 
 The above code tells us that for in January 2018, the average length of posts by 柯文哲 were longer than posts of 韓國瑜.
+
+
 -------------------------------------
 
  grep:
@@ -43,6 +45,8 @@ length(k)
 45
 
 The above code retrieves the row number of each of 柯文哲's posts, and by calculating the length of the vector we can see in January 2018 he had 45posts.
+
+
 -------------------------------------
 
  grepl:
@@ -60,6 +64,8 @@ mean(m)
 
 
 The above code retrieves the proportion of candidate posts which specifically reference the KMT.
+
+
 -------------------------------------
 
 regexpr:
@@ -68,7 +74,7 @@ The function searches a specified vector for any provided pattern, retrieving th
 n = regexpr("台灣",X201801_data$Message)
 The above code will find whether candaidates Messages contain the keyword Taiwan and which characters the keyword is in the message.
 
-...................
+
 data <- X201801_data
 han <- subset(data, select = c("Page_Name", "Message"), subset = (Page_Name == ("韓國瑜")) | (Page_Name =="韓國瑜粉絲團"))
 han  
@@ -85,7 +91,8 @@ ketaimean <- mean(ketai, na.rm = TRUE)
 data.frame(hantaimean,ketaimean)
 hantaimean ketaimean
  109.5     102.25
-..................
+
+
 The above code shows us that if the term Taiwan appears in posts on 柯文哲 affiliated pages on average it appears earlier than in posts connected with 韓國瑜.
 
 
@@ -124,6 +131,7 @@ data.frame(hanown, keown)
 
 
 The above code shows us that of the social media campaign of 柯文哲 in January 2018 over 53% of posts were contributed by his personal space, in contrast with 韓國瑜 of which only 5% of posts were issued by the candidates personal page.
+
 
 ------------------------------------------
 
