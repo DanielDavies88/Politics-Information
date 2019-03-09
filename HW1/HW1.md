@@ -29,7 +29,7 @@ data.frame(kenmean, hanmean)
 
 kenmean hanmean
 
-     298    58.5
+ 298    58.5
 
 ========
 
@@ -112,6 +112,7 @@ ketaimean <- mean(ketai, na.rm = TRUE)
 data.frame(hantaimean,ketaimean)
 
 hantaimean ketaimean
+
  109.5     102.25
 
 ========
@@ -198,7 +199,7 @@ data.frame(length(c),length(d),length(e))
 
 length.c. length.d. length.e.
 
-      142       767       783
+   142       767       783
 
 ========
 
