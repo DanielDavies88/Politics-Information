@@ -1,0 +1,303 @@
+---
+title:  "Daniel Davies - Politics&Information"
+output: html_document
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+## Kaohsiung Mayoral Campaigns 2018
+
+
+<style>
+body {text-align: justify}
+</style>
+
+### Total Amount of Posts 
+The below graph shows the frequency by which the Kaohsiung mayoral candidates Han Guo-Yu (韓國瑜) and Chen Chi-Mai (陳其邁) posted to Facebook. 
+
+From the figure we can see basic trends. Both candidates use of Facebook increased towards the election date, and then decreased after voting had taken place. Han Guo-Yu can be seen to post more frequently than Chen Chi-Mai.
+
+<center>
+```{r, echo=FALSE ,warning=FALSE}
+X201807_data <- data.table::fread("201807_data.csv",encoding = "UTF-8")
+X201808_data <- data.table::fread("201808_data.csv",encoding = "UTF-8")
+X201809_data <- data.table::fread("201809_data.csv",encoding = "UTF-8")
+X201810_data <- data.table::fread("201810_data.csv",encoding = "UTF-8")
+X201811_data <- data.table::fread("201811_data.csv",encoding = "UTF-8")
+X201812_data <- data.table::fread("201812_data.csv",encoding = "UTF-8")
+X201901_data <- data.table::fread("201901_data.csv",encoding = "UTF-8")
+AllData <- rbind (X201807_data, X201808_data , X201809_data , X201810_data , X201811_data , X201812_data)
+library(reshape2)
+library(ggplot2)
+#Dataset for Han posts only (by Month)
+
+july <- subset(X201807_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Aug <- subset(X201808_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Sep <- subset(X201809_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Oct <- subset(X201810_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Nov <- subset(X201811_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Dec <- subset(X201812_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Jan <- subset(X201901_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+
+#Dataset for Han posts (by post) & set Date
+Han2018 <- subset(AllData, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Han2018 $ Date = as.POSIXct( Han2018 $ Date , format  =  " %Y/%m/%d %H:%M:%S " )
+
+#Dataset for Chen posts only (by Month)
+
+cjuly <- subset(X201807_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cAug <- subset(X201808_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cSep <- subset(X201809_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cOct <- subset(X201810_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cNov <- subset(X201811_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cDec <- subset(X201812_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cJan <- subset(X201901_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+
+#Dataset for Chen posts (by post)
+Chen2018 <- subset(AllData, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+Chen2018 $ Date = as.POSIXct( Chen2018 $ Date , format  =  " %Y/%m/%d %H:%M:%S " )
+
+#Month Vector
+
+month <- c(7,8,9,10,11,12)
+
+
+
+HGY <- c(length(grep("韓國瑜", july$Page_Name)),length(grep("韓國瑜", Aug$Page_Name)),length(grep("韓國瑜", Sep$Page_Name)),length(grep("韓國瑜", Oct$Page_Name)),length(grep("韓國瑜", Nov$Page_Name)),length(grep("韓國瑜", Dec$Page_Name)))
+
+CCM <- c(length(grep("陳其邁 Chen Chi-Mai", cjuly$Page_Name)),length(grep("陳其邁 Chen Chi-Mai", cAug$Page_Name)),length(grep("陳其邁 Chen Chi-Mai", cSep$Page_Name)),length(grep("陳其邁 Chen Chi-Mai", cOct$Page_Name)),length(grep("陳其邁 Chen Chi-Mai", cNov$Page_Name)),length(grep("陳其邁 Chen Chi-Mai", cDec$Page_Name)))
+
+HanChenPostCount = data.frame(time  = month ,Han =HGY, Chen = CCM)
+colnames(HanChenPostCount ) <- c("time","韓國瑜","陳其邁")
+
+
+KaoPost <- melt(HanChenPostCount [, c("time","韓國瑜","陳其邁")], id="time")
+
+colnames(KaoPost) <- c("month", "Candidate", "posts")
+
+ggplot(KaoPost) + geom_bar(aes(x=month, y=posts,fill=Candidate),stat="identity",position = "dodge") + labs(title="Kaohsiung Posts")
+```
+</center>
+
+### Likes by Post Type
+The below graph shows a summary of which type of posts by Kaohsiung mayoral candidates Han Guo-Yu (韓國瑜) and Chen Chi-Mai (陳其邁) received the most positive feedback, in terms of 'likes'.
+From the figure we can see basic trends in audience response to the Kaohsiung City mayoral candidates. Although both candidates used multple types of content, both received the most positive response from posts which contained videos, followed by posts which contained photographs.In general Han Guo-Yu received a higher level of positive responses than Chen Chi-Mai. 
+
+
+
+
+<center>
+```{r, echo=FALSE, warning=FALSE}
+
+
+
+
+X201807_data <- data.table::fread("201807_data.csv",encoding = "UTF-8")
+X201808_data <- data.table::fread("201808_data.csv",encoding = "UTF-8")
+X201809_data <- data.table::fread("201809_data.csv",encoding = "UTF-8")
+X201810_data <- data.table::fread("201810_data.csv",encoding = "UTF-8")
+X201811_data <- data.table::fread("201811_data.csv",encoding = "UTF-8")
+X201812_data <- data.table::fread("201812_data.csv",encoding = "UTF-8")
+X201901_data <- data.table::fread("201901_data.csv",encoding = "UTF-8")
+#Dataset for Han posts only (by Month)
+
+
+#Combine to single data set
+AllData <- rbind(X201807_data, X201808_data,X201809_data,X201810_data,X201811_data,X201812_data,X201901_data)
+
+july <- subset(X201807_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Aug <- subset(X201808_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Sep <- subset(X201809_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Oct <- subset(X201810_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Nov <- subset(X201811_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Dec <- subset(X201812_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Jan <- subset(X201901_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+
+#Dataset for Han posts (by post) & set Date
+Han2018 <- subset(AllData, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("韓國瑜")))
+Han2018 $ Date = as.POSIXct( Han2018 $ Date , format  =  " %Y/%m/%d %H:%M:%S " )
+
+#Dataset for Chen posts only (by Month)
+
+cjuly <- subset(X201807_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cAug <- subset(X201808_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cSep <- subset(X201809_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cOct <- subset(X201810_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cNov <- subset(X201811_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cDec <- subset(X201812_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+cJan <- subset(X201901_data, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+
+#Dataset for Chen posts (by post)
+Chen2018 <- subset(AllData, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count", "Link_Title", "Link Description", "Type"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+Chen2018 $ Date = as.POSIXct( Chen2018 $ Date , format  =  " %Y/%m/%d %H:%M:%S " )
+
+
+
+a <- grep("video",Han2018$Type)
+b <- grep("photo",Han2018$Type)
+c <- grep("link",Han2018$Type)
+d <- grep("status",Han2018$Type)
+
+a1 <- grep("video",Chen2018$Type)
+b1 <- grep("photo",Chen2018$Type)
+c1 <- grep("link",Chen2018$Type)
+d1 <- grep("status",Chen2018$Type)
+
+
+
+zzzz2 <- c(sum(Chen2018$LIKE_COUNT[a1]), sum(Chen2018$LIKE_COUNT[b1]), sum(Chen2018$LIKE_COUNT[c1]), sum(Chen2018$LIKE_COUNT[d1],sum(Han2018$LIKE_COUNT[a]), sum(Han2018$LIKE_COUNT[b]), sum(Han2018$LIKE_COUNT[c]), sum(Han2018$LIKE_COUNT[d])))
+xxxx2 <- c("videos", "photos", "link", "status","videos", "photos", "link", "status")
+cccc2 <- c(Chen2018$Page_Name[1:4],Han2018$Page_Name[1:4])
+vvvv<-c(sum(Chen2018$LIKE_COUNT[a1]), sum(Chen2018$LIKE_COUNT[b1]), sum(Chen2018$LIKE_COUNT[c1]), sum(Chen2018$LIKE_COUNT[d1]),sum(Han2018$LIKE_COUNT[a]), sum(Han2018$LIKE_COUNT[b]), sum(Han2018$LIKE_COUNT[c]), sum(Han2018$LIKE_COUNT[d]))
+try2df3 <- data.frame(Candidate = cccc2, likes = vvvv, type = xxxx2)
+
+
+library(ggplot2)
+
+ggplot(try2df3) + geom_bar(aes(x=Candidate, y=likes,fill=type),stat="identity",position = "dodge") + labs(title="Total Likes by Post Type (Jul - Dec)")
+
+
+
+```
+</center> 
+
+### Use of Opposition Candidates Name
+The below graph shows the frequency by which the Kaohsiung mayoral candidates Han Guo-Yu (韓國瑜) and Chen Chi-Mai (陳其邁) used the name of their opponent in their Facebook post messages. 
+
+From the figure we can see basic trends. Both candidates used the name of their opponent.Han Guo-Yu's reference to his opponent by name decreased over time, while Chen Chi-Mai's references to his opponent increased over time.
+
+<center>
+```{r, echo=FALSE ,warning=FALSE}
+HanOtherr2018 <- c((length(grep("陳其邁",july$Message)))/(nrow(july)), (length(grep("陳其邁",Aug$Message)))/(nrow(Aug)), (length(grep("陳其邁",Sep$Message)))/(nrow(Sep)), (length(grep("陳其邁",Oct$Message)))/(nrow(Oct)), (length(grep("陳其邁",Nov$Message)))/(nrow(Nov)), (length(grep("陳其邁",Dec$Message)))/(nrow(Dec)))
+HanOtherr20181 <- c((length(grep("陳其邁",july$'Link Description')))/(nrow(july)), (length(grep("陳其邁",Aug$'Link Description')))/(nrow(Aug)), (length(grep("陳其邁",Sep$'Link Description')))/(nrow(Sep)), (length(grep("陳其邁",Oct$'Link Description')))/(nrow(Oct)), (length(grep("陳其邁",Nov$'Link Description')))/(nrow(Nov)), (length(grep("陳其邁",Dec$'Link Description')))/(nrow(Dec)))
+HanOtherr20182 <- c((length(grep("陳其邁",july$Link_Title)))/(nrow(july)), (length(grep("陳其邁",Aug$Link_Title)))/(nrow(Aug)), (length(grep("陳其邁",Sep$Link_Title)))/(nrow(Sep)), (length(grep("陳其邁",Oct$Link_Title)))/(nrow(Oct)), (length(grep("陳其邁",Nov$Link_Title)))/(nrow(Nov)), (length(grep("陳其邁",Dec$Link_Title)))/(nrow(Dec)))
+
+ChenOtherr2018 <- c((length(grep("韓國瑜",cjuly$Message)))/(nrow(cjuly)), (length(grep("韓國瑜",cAug$Message)))/(nrow(cAug)), (length(grep("韓國瑜",cSep$Message)))/(nrow(cSep)), (length(grep("韓國瑜",cOct$Message)))/(nrow(cOct)), (length(grep("韓國瑜",cNov$Message)))/(nrow(cNov)), (length(grep("韓國瑜",cDec$Message)))/(nrow(cDec)))
+ChenOtherr20181 <- c((length(grep("韓國瑜",cjuly$'Link Description')))/(nrow(cjuly)), (length(grep("韓國瑜",cAug$'Link Description')))/(nrow(cAug)), (length(grep("韓國瑜",cSep$'Link Description')))/(nrow(cSep)), (length(grep("韓國瑜",cOct$'Link Description')))/(nrow(cOct)), (length(grep("韓國瑜",cNov$'Link Description')))/(nrow(cNov)), (length(grep("韓國瑜",cDec$'Link Description')))/(nrow(cDec)))
+ChenOtherr20182 <- c((length(grep("韓國瑜",cjuly$Link_Title)))/(nrow(cjuly)), (length(grep("韓國瑜",cAug$Link_Title)))/(nrow(cAug)), (length(grep("韓國瑜",cSep$Link_Title)))/(nrow(cSep)), (length(grep("韓國瑜",cOct$Link_Title)))/(nrow(cOct)), (length(grep("韓國瑜",cNov$Link_Title)))/(nrow(cNov)), (length(grep("韓國瑜",cDec$Link_Title)))/(nrow(cDec)))
+
+HanOtherR<-HanOtherr2018  + HanOtherr20181 +HanOtherr20182
+ChenOtherR<-ChenOtherr2018+ChenOtherr20181+ChenOtherr20182
+
+month <- c(7,8,9,10,11,12)
+OtherRate = data.frame(time  = month ,Han =HanOtherR, Chen = ChenOtherR)
+colnames(OtherRate ) <- c("time","韓國瑜","陳其邁")
+library(reshape2)
+
+OtherRate2 <- melt(OtherRate [, c("time","韓國瑜","陳其邁")], id="time")
+
+
+colnames(OtherRate2 ) <- c("month", "Candidate", "Use_of_Other")
+
+ggplot(OtherRate2) + geom_line(aes(x=month, y=Use_of_Other, color=Candidate)) + labs(title="Kaohsiung Use of Opposition Name (rate)")
+
+```
+</center>
+
+
+
+
+### Total likes (by week)
+The below graph shows a summary of positive feedback, in terms of 'likes' for posts by Kaohsiung mayoral candidates Han Guo-Yu (韓國瑜) and Chen Chi-Mai (陳其邁).
+
+From the figure we can see basic trends. Positive feedback for both candidates increased over time, however, Han Guo-Yu's maintained a higher amount of positive feedback.
+
+<center>
+```{r, echo=FALSE, warning=FALSE}
+
+#Han
+Han2018 <- subset(AllData, select = c("Date", "Page_Name", "Message", "Link_Title", "Link Description", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count"), subset = (Page_Name == ("韓國瑜")))
+
+
+HanWeekly <- data.frame(week = as.numeric(format(as.Date(Han2018$Date), format="%W")), Han2018)
+
+for(i in 26:53){
+  assign(paste("Hanweek",i,sep = ""),(subset(HanWeekly, select = c("week", "Date", "Page_Name", "Message", "Link_Title", "Link.Description", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count"), subset = (week == i))
+  ))}  
+
+
+avHanLikebyWeek2 <- c(0, 3147.000  ,4676.857 , 3012.143  ,2432.500,  2911.429,  4202.900,  3352.857  ,4953.100 , 5520.429, 2733.222,  2516.800 , 4506.818,  4467.000 , 6888.667 ,25243.500 ,25631.000 ,24537.273 ,28255.400 ,33514.500, 38877.632 ,24312.500 ,87132.000 ,42655.714 ,43986.750 ,37146.000, 32184.750 )
+HANlikesBYweek <- data.frame(time=c(27:53),Han =avHanLikebyWeek2)
+
+
+Hanweeks<-as.numeric(HANlikesBYweek$time)
+
+HanmeanLikes <-c(HANlikesBYweek$Han)
+
+#chen
+Chen2018 <- subset(AllData, select = c("Date", "Page_Name", "Message", "Link_Title", "Link Description", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+
+ChenWeekly <- data.frame(week = as.numeric(format(as.Date(Chen2018$Date), format="%W")), Chen2018)
+
+for(i in 26:53){
+  assign(paste("Chenweek",i,sep = ""),(subset(ChenWeekly, select = c("week", "Date", "Page_Name", "Message", "Link_Title", "Link.Description", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count"), subset = (week == i))
+  ))}  
+
+
+avChenLikebyWeek2 <- c(588.0000  , 670.4000,   779.4286   ,788.4000,   631.2609,   717.0000   ,818.7500,  1037.7000  , 809.4167,  959.2000   ,630.4737 , 1037.2308,  1134.7368,  1722.4615 , 2211.2222,  3835.3333,  4609.0625,  6205.4667,
+  6604.2800, 11257.2692, 12969.8529, 14236.1304, 39846.0000 ,28633.5000, 18641.0000, 12715.3000 ,15271.7500, 12355.6667)
+ChenlikesBYweek <- data.frame(time=c(26:53),Chen =avChenLikebyWeek2)
+
+
+Chenweeks<-as.numeric(ChenlikesBYweek$time)
+
+ChenmeanLikes <-c(ChenlikesBYweek$Chen)
+
+
+#both
+AllWeeks <- c(26:53)
+
+AA = data.frame(time  = AllWeeks,Han =c(0,HanmeanLikes), Chen = ChenmeanLikes)
+
+colnames(AA) <- c("time","韓國瑜", "陳其邁")
+
+
+Kaobw <- melt(AA[, c("time","韓國瑜","陳其邁")], id="time")
+
+colnames(Kaobw) <- c("week", "Candidate", "likes")
+library(ggplot2)
+
+
+
+
+theme_set(theme_bw())  # pre-set the bw theme.
+
+ggplot(Kaobw, aes(x=week, y=likes)) + 
+  geom_point(aes(col=Candidate )) + 
+  labs(title="Kaohsiung Likes (by week)")+
+         geom_smooth(aes(col=Candidate), method="lm", se=F)
+       
+
+
+
+
+
+```
+</center>
+
+
+
+
+
+### Likes and Length (by week)
+The below graph shows a summary of the relationship between message length and positive feedback, in terms of 'likes', for Kaohsiung mayoral candidates Han Guo-Yu (韓國瑜) and Chen Chi-Mai (陳其邁).
+
+From the figure we can see there is no obvious relationship between the two variables. For Han Guo-Yu, a similar amount of likes were received for messages of varying length. Chen Chi-Mai show's a varied amount of likes for a similar message length.
+
+<center>
+``` {r, echo = FALSE, warning = FALSE}
+Chen2018<- subset(AllData, select = c("Date", "Page_Name", "Message", "All_Reaction_Count", "LIKE_COUNT", "ANGRY_COUNT", "Share_Count"), subset = (Page_Name == ("陳其邁 Chen Chi-Mai")))
+Chen2018 $ Date = as.POSIXct( Chen2018 $ Date , format  =  " %Y/%m/%d %H:%M:%S " )
+
+HanMessLike<- data.frame(Han2018$LIKE_COUNT , nchar(Han2018$Message), Han2018$Page_Name)
+ChenMessLike<- data.frame(Chen2018$LIKE_COUNT, nchar(Chen2018$Message), Chen2018$Page_Name)
+colnames(HanMessLike) <- c("likes","Message_Length","name" )
+colnames(ChenMessLike) <- c("likes","Message_Length","name" )
+library(plyr)
+combinedMessLike <- rbind.fill(HanMessLike, ChenMessLike)
+
+ggplot(combinedMessLike, aes(likes, Message_Length, colour = name)) + geom_point() + labs(title="Kaohsiung Likes vs. Length") + xlim(0,20000) + ylim(0,1500)
+```
+<center>
